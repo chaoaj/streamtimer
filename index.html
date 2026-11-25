@@ -4,15 +4,183 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Sketch</title>
+    <title>Stream Timer — When to Subscribe &amp; Cancel</title>
 
     <link rel="stylesheet" type="text/css" href="style.css">
 
     <script src="libraries/p5.min.js"></script>
-    <script src="libraries/p5.sound.min.js"></script>
   </head>
 
   <body>
+<a class="skip" href="#results">Skip to recommendations</a>
+
+<header>
+  <h1>Stream Timer</h1>
+  <p class="lede">Pick the upcoming shows you want to watch. Stream Timer looks at each episode release schedule and tells you when to subscribe to each service, when to cancel, and what you’ll pay month by month.</p>
+  <p class="hint">See the Show data panel for when schedules were last checked (US). Shows marked <span class="badge b-est">Partly estimated</span> are missing some official dates, so check them again closer to the premiere.</p>
+</header>
+
+<div class="layout">
+  <!-- ============ CONTROLS ============ -->
+  <aside aria-label="Choose shows and strategy">
+    <section class="panel" aria-labelledby="dataHead">
+      <h2 id="dataHead">Show data</h2>
+      <p id="dataInfo" class="hint">Loading show data…</p>
+      <div class="tool-row">
+        <button type="button" id="updateShows" class="primary">Update shows</button>
+        <button type="button" id="exportJson">Export JSON</button>
+        <button type="button" id="importBtn">Import JSON</button>
+        <input type="file" id="importFile" accept=".json,application/json" hidden aria-label="Choose a shows JSON file to import">
+      </div>
+      <div id="updateMsg" role="status" aria-live="polite" class="hint"></div>
+      <p class="hint">All show schedules, service colors and prices live in <code>shows.json</code>. On start the page uses, in order: a file you imported (kept in this browser), then the <code>shows.json</code> next to this page, then its built-in copy. <b>Update shows</b> always loads the online <code>shows.json</code>.</p>
+      <p class="hint">To pull fresh schedules yourself, run <code>python update_data.py</code> next to your <code>shows.json</code> and <code>tracklist.json</code>. It refreshes your tracked titles and adds new seasons from TVmaze. With a free TMDB key it also adds new movies. Then use <b>Import JSON</b> to load the result.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="trackHead">
+      <h2 id="trackHead" tabindex="-1">My tracklist</h2>
+      <p id="trackInfo" class="hint">Loading tracklist…</p>
+      <ul id="trackList" class="track-list" aria-label="Tracked shows"></ul>
+      <div class="tool-row">
+        <button type="button" id="planTracked" class="primary">Plan my tracked shows</button>
+        <button type="button" id="saveTrack">Save tracklist.json</button>
+        <button type="button" id="openTrackBtn">Open tracklist.json</button>
+        <button type="button" id="defaultTrack">Load default</button>
+        <input type="file" id="openTrackFile" accept=".json,application/json" hidden aria-label="Choose a tracklist JSON file to open">
+      </div>
+      <div id="trackMsg" role="status" aria-live="polite" class="hint"></div>
+      <p class="hint">Use <b>☆ Track</b> next to any show to keep it here long term. Your tracklist, including shows you added yourself, saves in this browser automatically. Save it as <code>tracklist.json</code> to back it up or move it to another device. If this browser has none saved, the page loads the default <code>tracklist.json</code> next to it.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="stratHead">
+      <h2 id="stratHead">1. How do you watch?</h2>
+      <fieldset>
+        <legend>Viewing strategy</legend>
+        <div class="radio-row"><input type="radio" name="mode" id="modeAirs" value="airs" checked>
+          <label for="modeAirs"><b>Watch as it airs</b><span class="show-meta">Subscribe at the premiere and stay through the finale. No spoilers, but you pay more.</span></label></div>
+        <div class="radio-row"><input type="radio" name="mode" id="modeBinge" value="binge">
+          <label for="modeBinge"><b>Binge after the finale</b><span class="show-meta">Wait until every episode is out, then subscribe for one short burst. Costs the least.</span></label></div>
+      </fieldset>
+      <div id="bingeOpts">
+        <label for="bingeDays"><b>Days you need to binge one show</b></label><br>
+        <input type="number" id="bingeDays" min="1" max="60" value="14" aria-describedby="bingeHint">
+        <p class="hint" id="bingeHint">Only used with the binge strategy.</p>
+        <div class="radio-row"><input type="checkbox" id="consolidate" checked>
+          <label for="consolidate"><b>Group binges on the same service</b><span class="show-meta">Wait for the last finale on a service, then binge all of its shows in one window.</span></label></div>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="showsHead">
+      <h2 id="showsHead">2. Pick your shows</h2>
+      <div class="tool-row">
+        <label for="kindFilter" class="sr-only">Show in the list</label>
+        <select id="kindFilter" aria-label="Show in the list">
+          <option value="all">Series and movies</option>
+          <option value="series">Series only</option>
+          <option value="movie">Movies only</option>
+        </select>
+        <button type="button" id="selAll">Select all</button>
+        <button type="button" id="selNone">Clear</button>
+      </div>
+      <div id="showPicker"></div>
+
+      <details id="addDetails">
+        <summary>Add a show that isn’t listed</summary>
+        <form id="addForm" class="form-grid" novalidate>
+          <label>Show title<input type="text" id="fTitle" required autocomplete="off"></label>
+          <label>Service<select id="fService"></select></label>
+          <label>Premiere date<input type="date" id="fStart" required></label>
+          <label>Total episodes<input type="number" id="fCount" min="1" max="60" value="8" required></label>
+          <label>Release pattern
+            <select id="fCadence">
+              <option value="weekly">One episode a week</option>
+              <option value="two">2-episode premiere, then weekly</option>
+              <option value="three">3-episode premiere, then weekly</option>
+              <option value="binge">All episodes at once</option>
+              <option value="movie">Movie (one streaming release date)</option>
+            </select>
+          </label>
+          <p id="formMsg" class="hint" role="status" aria-live="polite"></p>
+          <button type="submit" class="primary">Add show</button>
+        </form>
+      </details>
+
+      <p class="hint">Prices and discounts are under <a href="#ratesHead">Rates &amp; discounts</a>.</p>
+    </section>
+  </aside>
+
+  <!-- ============ RESULTS ============ -->
+  <main id="results" tabindex="-1">
+    <section class="panel" aria-labelledby="recHead">
+      <h2 id="recHead" tabindex="-1">3. Your subscribe &amp; cancel plan</h2>
+      <div id="liveSummary" role="status" aria-live="polite"></div>
+      <div class="totals" id="totals"></div>
+      <p id="planMsg" class="hint" role="status" aria-live="polite"></p>
+      <div class="cards" id="cards"></div>
+      <div id="removedBox"></div>
+      <div class="tool-row">
+        <button type="button" id="copyPlan">Copy plan as text</button>
+        <button type="button" id="copyIcs">Copy calendar reminders (.ics)</button>
+      </div>
+      <p id="copyMsg" class="hint" role="status" aria-live="polite"></p>
+      <label for="copyFallback" class="sr-only">Copied text</label>
+      <textarea id="copyFallback" hidden readonly></textarea>
+    </section>
+
+    <section class="panel" aria-labelledby="tlHead">
+      <h2 id="tlHead">Release timeline</h2>
+      <p class="hint" id="tlHint">Each row is a show or movie. Circles are episode release days, and a square marked M is a movie's streaming date. A number in a circle means that many episodes come out that day. Striped bars at the bottom are when you’re subscribed. The month-by-month table below has the same information as text.</p>
+      <div id="canvasHolder"></div>
+      <ul class="legend" id="legend" aria-label="Service colors and patterns"></ul>
+    </section>
+
+    <section class="panel" aria-labelledby="monthHead">
+      <h2 id="monthHead">Month-by-month plan</h2>
+      <div class="table-wrap" id="monthTable"></div>
+    </section>
+
+    <section class="panel" aria-labelledby="ratesHead">
+      <h2 id="ratesHead" tabindex="-1">Rates &amp; discounts</h2>
+      <p id="ratesInfo" class="hint">Loading rates…</p>
+      <div class="tool-row">
+        <button type="button" id="saveRates">Save rates.json</button>
+        <button type="button" id="openRatesBtn">Open rates.json</button>
+        <button type="button" id="defaultRates">Load default</button>
+        <input type="file" id="openRatesFile" accept=".json,application/json" hidden aria-label="Choose a rates JSON file to open">
+      </div>
+      <div id="ratesMsg" role="status" aria-live="polite" class="hint"></div>
+      <p class="hint">Each service has a <b>standard</b> monthly rate and optional discounts. Two kinds of discount: <b>intro</b> (a promo price for your first few monthly charges if you subscribe before a deadline) and <b>until a date</b> (a promo price on every charge up to an end date, then the standard rate again). Only discounts with “Use this discount” checked change your plan. Your edits save in this browser. If none are saved, the page loads the default <code>rates.json</code> next to it, or else its built-in copy.</p>
+      <div id="ratesEditor"></div>
+    </section>
+
+    <section class="panel" aria-labelledby="epHead">
+      <h2 id="epHead">Episode release guides</h2>
+      <div id="episodeGuides"></div>
+    </section>
+
+    <section class="panel" aria-labelledby="spotHead">
+      <h2 id="spotHead">Service spotlight: what’s coming to each service</h2>
+      <p class="hint">Covers every show in the list, not just the ones you picked. “Best single month” is the one month that catches the most finales if you only subscribe once.</p>
+      <ul class="spot-list" id="spotlight"></ul>
+    </section>
+
+    <section class="panel" aria-labelledby="srcHead">
+      <h2 id="srcHead">About the data</h2>
+      <p class="note">Streaming services change dates often. Dates marked estimated are educated guesses based on announced windows and each show’s usual pattern. Billing assumes monthly plans that renew on the same day each month, and that canceling keeps your access until the paid month ends (true for all eight services at the time of writing). Free trials and bundles aren’t included.</p>
+    </section>
+  </main>
+</div>
+
+
+<!-- Built-in copies of shows.json and rates.json, used when the JSON files can't be loaded
+     (for example when index.html is opened straight from disk). Refresh with: python tools/build.py -->
+<script type="application/json" id="fallbackData">
+{"schemaVersion":1,"dataCheckedOn":"2026-11-25","region":"US","notes":"Edit this file to update Stream Timer, or run tools/update_data.py. type: series | movie (a movie has one entry in episodes: its streaming date). confidence: confirmed | estimated. Dates are YYYY-MM-DD. Prices are USD per month.","services":[{"id":"netflix","name":"Netflix","bg":"#B20710","fg":"#FFFFFF","price":8.99,"pattern":"diag"},{"id":"hulu","name":"Hulu","bg":"#1CE783","fg":"#0B0B0B","price":11.99,"pattern":"dots"},{"id":"disney","name":"Disney+","bg":"#113CCF","fg":"#FFFFFF","price":11.99,"pattern":"horiz"},{"id":"hbomax","name":"HBO Max","bg":"#5B2EE0","fg":"#FFFFFF","price":10.99,"pattern":"cross"},{"id":"paramount","name":"Paramount+","bg":"#0064FF","fg":"#FFFFFF","price":8.99,"pattern":"vert"},{"id":"peacock","name":"Peacock","bg":"#FCCC12","fg":"#0B0B0B","price":10.99,"pattern":"diagR"},{"id":"apple","name":"Apple TV","bg":"#000000","fg":"#FFFFFF","price":14.99,"pattern":"grid"},{"id":"prime","name":"Prime Video","bg":"#00A8E1","fg":"#0B0B0B","price":8.99,"pattern":"zig"}],"shows":[{"id":"bad-monkey-2","title":"Bad Monkey (Season 2)","service":"apple","confidence":"confirmed","note":"10 episodes, weekly on Wednesdays, Dec 2 through the Feb 3 finale.","episodes":[{"n":1,"date":"2026-12-02"},{"n":2,"date":"2026-12-09"},{"n":3,"date":"2026-12-16"},{"n":4,"date":"2026-12-23"},{"n":5,"date":"2026-12-30"},{"n":6,"date":"2027-01-06"},{"n":7,"date":"2027-01-13"},{"n":8,"date":"2027-01-20"},{"n":9,"date":"2027-01-27"},{"n":10,"date":"2027-02-03"}],"type":"series"},{"id":"maxton-hall-3","title":"Maxton Hall (Season 3, final)","service":"prime","confidence":"confirmed","note":"6 episodes: 2 a week starting Dec 9, finale Dec 23.","episodes":[{"n":1,"date":"2026-12-09"},{"n":2,"date":"2026-12-09"},{"n":3,"date":"2026-12-16"},{"n":4,"date":"2026-12-16"},{"n":5,"date":"2026-12-23"},{"n":6,"date":"2026-12-23"}],"type":"series"},{"id":"ted-animated","title":"TED: The Animated Series","service":"peacock","confidence":"confirmed","note":"All 8 episodes Dec 17. Peacock says more episodes are coming in 2027.","episodes":[{"n":1,"date":"2026-12-17"},{"n":2,"date":"2026-12-17"},{"n":3,"date":"2026-12-17"},{"n":4,"date":"2026-12-17"},{"n":5,"date":"2026-12-17"},{"n":6,"date":"2026-12-17"},{"n":7,"date":"2026-12-17"},{"n":8,"date":"2026-12-17"}],"type":"series"},{"id":"frisco-king","title":"Frisco King (Season 1)","service":"paramount","confidence":"confirmed","note":"2-episode premiere Dec 18, then weekly on Fridays. 8 episodes, finale Jan 29.","episodes":[{"n":1,"date":"2026-12-18"},{"n":2,"date":"2026-12-18"},{"n":3,"date":"2026-12-25"},{"n":4,"date":"2027-01-01"},{"n":5,"date":"2027-01-08"},{"n":6,"date":"2027-01-15"},{"n":7,"date":"2027-01-22"},{"n":8,"date":"2027-01-29"}],"type":"series"},{"id":"emily-paris-6","title":"Emily in Paris (Season 6, final)","service":"netflix","confidence":"estimated","note":"Premieres Dec 24. Episode guides list 10 episodes, all on that day, but Netflix hasn’t confirmed the count.","episodes":[{"n":1,"date":"2026-12-24"},{"n":2,"date":"2026-12-24"},{"n":3,"date":"2026-12-24"},{"n":4,"date":"2026-12-24"},{"n":5,"date":"2026-12-24"},{"n":6,"date":"2026-12-24"},{"n":7,"date":"2026-12-24"},{"n":8,"date":"2026-12-24"},{"n":9,"date":"2026-12-24"},{"n":10,"date":"2026-12-24"}],"type":"series"},{"id":"harry-potter-1","title":"Harry Potter (Season 1)","service":"hbomax","confidence":"estimated","note":"HBO confirmed the Dec 25 premiere and 8 episodes. The weekly Sunday schedule through a Feb 14 finale is reported, not official.","episodes":[{"n":1,"date":"2026-12-25"},{"n":2,"date":"2027-01-03"},{"n":3,"date":"2027-01-10"},{"n":4,"date":"2027-01-17"},{"n":5,"date":"2027-01-24"},{"n":6,"date":"2027-01-31"},{"n":7,"date":"2027-02-07"},{"n":8,"date":"2027-02-14"}],"type":"series"},{"id":"the-pitt-3","title":"The Pitt (Season 3)","service":"hbomax","confidence":"estimated","note":"15 episodes, coming January 2027. The Jan 7 date assumes the same week as past premieres. Not official yet.","episodes":[{"n":1,"date":"2027-01-07"},{"n":2,"date":"2027-01-14"},{"n":3,"date":"2027-01-21"},{"n":4,"date":"2027-01-28"},{"n":5,"date":"2027-02-04"},{"n":6,"date":"2027-02-11"},{"n":7,"date":"2027-02-18"},{"n":8,"date":"2027-02-25"},{"n":9,"date":"2027-03-04"},{"n":10,"date":"2027-03-11"},{"n":11,"date":"2027-03-18"},{"n":12,"date":"2027-03-25"},{"n":13,"date":"2027-04-01"},{"n":14,"date":"2027-04-08"},{"n":15,"date":"2027-04-15"}],"type":"series"},{"id":"ahsoka-2","title":"Ahsoka (Season 2)","service":"disney","confidence":"estimated","note":"Premieres Jan 20. 8 episodes. Weekly release is an estimate: Disney hasn’t announced the schedule.","episodes":[{"n":1,"date":"2027-01-20"},{"n":2,"date":"2027-01-27"},{"n":3,"date":"2027-02-03"},{"n":4,"date":"2027-02-10"},{"n":5,"date":"2027-02-17"},{"n":6,"date":"2027-02-24"},{"n":7,"date":"2027-03-03"},{"n":8,"date":"2027-03-10"}],"type":"series"},{"id":"the-one-piece","title":"THE ONE PIECE (anime)","service":"netflix","confidence":"estimated","note":"All 7 episodes at once, in February 2027. The exact day isn’t set yet, so it’s shown on Feb 1.","episodes":[{"n":1,"date":"2027-02-01"},{"n":2,"date":"2027-02-01"},{"n":3,"date":"2027-02-01"},{"n":4,"date":"2027-02-01"},{"n":5,"date":"2027-02-01"},{"n":6,"date":"2027-02-01"},{"n":7,"date":"2027-02-01"}],"type":"series"},{"id":"the-land","title":"The Land (Season 1)","service":"hulu","confidence":"estimated","note":"2-episode premiere Feb 15, then weekly on Mondays. The 10-episode total comes from episode guides, not Hulu.","episodes":[{"n":1,"date":"2027-02-15"},{"n":2,"date":"2027-02-15"},{"n":3,"date":"2027-02-22"},{"n":4,"date":"2027-03-01"},{"n":5,"date":"2027-03-08"},{"n":6,"date":"2027-03-15"},{"n":7,"date":"2027-03-22"},{"n":8,"date":"2027-03-29"},{"n":9,"date":"2027-04-05"},{"n":10,"date":"2027-04-12"}],"type":"series"},{"id":"presumed-innocent-2","title":"Presumed Innocent (Season 2)","service":"apple","confidence":"estimated","note":"2-episode premiere Feb 19, then weekly. The 8-episode total is an estimate based on Season 1.","episodes":[{"n":1,"date":"2027-02-19"},{"n":2,"date":"2027-02-19"},{"n":3,"date":"2027-02-26"},{"n":4,"date":"2027-03-05"},{"n":5,"date":"2027-03-12"},{"n":6,"date":"2027-03-19"},{"n":7,"date":"2027-03-26"},{"n":8,"date":"2027-04-02"}],"type":"series"},{"id":"rings-of-power-3","title":"The Rings of Power (Season 3)","service":"prime","confidence":"confirmed","note":"Running now. Episodes 1–4 came out Nov 11, 5–6 on Nov 18, and the last two moved up to the evening of Nov 24. All 8 are out, so you can binge now.","episodes":[{"n":1,"date":"2026-11-11"},{"n":2,"date":"2026-11-11"},{"n":3,"date":"2026-11-11"},{"n":4,"date":"2026-11-11"},{"n":5,"date":"2026-11-18"},{"n":6,"date":"2026-11-18"},{"n":7,"date":"2026-11-24"},{"n":8,"date":"2026-11-24"}],"type":"series"},{"id":"yellowjackets-4","title":"Yellowjackets (Season 4, final)","service":"paramount","confidence":"confirmed","note":"Running now. 10 episodes, weekly on Fridays, Nov 20 through the Jan 22 series finale. Needs the Paramount+ Premium plan (with Showtime), so raise the Paramount+ price if you're on Essential.","episodes":[{"n":1,"date":"2026-11-20"},{"n":2,"date":"2026-11-27"},{"n":3,"date":"2026-12-04"},{"n":4,"date":"2026-12-11"},{"n":5,"date":"2026-12-18"},{"n":6,"date":"2026-12-25"},{"n":7,"date":"2027-01-01"},{"n":8,"date":"2027-01-08"},{"n":9,"date":"2027-01-15"},{"n":10,"date":"2027-01-22"}],"type":"series"},{"id":"marshals-2","title":"Marshals (Season 2)","service":"paramount","confidence":"estimated","note":"Running now. Airs Sundays on CBS and streams on Paramount+ the next day (dates shown are the Paramount+ days). Episodes 1–8 ran Oct 5–Nov 23. Episodes 9–18 are announced only for 2027: the Jan 11 restart and the 18-episode total are estimates.","episodes":[{"n":1,"date":"2026-10-05"},{"n":2,"date":"2026-10-12"},{"n":3,"date":"2026-10-19"},{"n":4,"date":"2026-10-26"},{"n":5,"date":"2026-11-02"},{"n":6,"date":"2026-11-09"},{"n":7,"date":"2026-11-16"},{"n":8,"date":"2026-11-23"},{"n":9,"date":"2027-01-11"},{"n":10,"date":"2027-01-18"},{"n":11,"date":"2027-01-25"},{"n":12,"date":"2027-02-01"},{"n":13,"date":"2027-02-08"},{"n":14,"date":"2027-02-15"},{"n":15,"date":"2027-02-22"},{"n":16,"date":"2027-03-01"},{"n":17,"date":"2027-03-08"},{"n":18,"date":"2027-03-15"}],"type":"series"},{"id":"the-man-with-the-bag-movie","title":"The Man With the Bag","service":"prime","type":"movie","confidence":"confirmed","note":"Holiday comedy with Arnold Schwarzenegger. Streaming Dec 2 on Prime Video.","episodes":[{"n":1,"date":"2026-12-02"}]},{"id":"in-waves-movie","title":"In Waves","service":"netflix","type":"movie","confidence":"confirmed","note":"Animated feature. Streaming Dec 11 on Netflix.","episodes":[{"n":1,"date":"2026-12-11"}]},{"id":"ray-gunn-movie","title":"Ray Gunn","service":"netflix","type":"movie","confidence":"confirmed","note":"Animated feature from Brad Bird. Streaming Dec 18 on Netflix.","episodes":[{"n":1,"date":"2026-12-18"}]}]}
+</script>
+<script type="application/json" id="fallbackRates">
+{"schemaVersion":1,"type":"stream-timer-rates","checkedOn":"2026-11-25","currency":"USD","notes":"standard = normal monthly price. discounts: kind 'intro' = promo price for the first N monthly charges if you subscribe between startsOn and signUpBy; kind 'until' = promo price on every charge dated up to endsOn, then standard. Only discounts with enabled:true change the plan. bundles: a bundle with status 'keeping' is always on: its services get no subscribe/cancel dates and its price is charged every month. status on a service: 'keeping' = you already pay for it and keep it (always on); 'as-needed' = subscribe and cancel around your shows.","rates":[{"service":"netflix","plan":"Standard with ads","standard":8.99,"status":"keeping","discounts":[]},{"service":"hulu","plan":"Hulu (with ads)","standard":11.99,"status":"as-needed","discounts":[]},{"service":"disney","plan":"Disney+ (with ads)","standard":11.99,"status":"as-needed","discounts":[{"id":"disney-bf","label":"Black Friday Disney+ & Hulu bundle (2025 terms)","price":4.99,"kind":"intro","months":12,"startsOn":"2026-11-20","signUpBy":"2026-12-01","endsOn":"","enabled":false,"confirmed":false,"note":"Last year: Disney+ and Hulu (with ads) bundle at $4.99/mo for 12 months. It covers Hulu too, so set Hulu's standard to 0 while using it. Not announced for 2026 yet."}]},{"service":"hbomax","plan":"Basic with ads","standard":10.99,"status":"as-needed","discounts":[{"id":"hbomax-bf","label":"Black Friday (2025 terms)","price":2.99,"kind":"intro","months":12,"startsOn":"2026-11-20","signUpBy":"2026-12-01","endsOn":"","enabled":false,"confirmed":false,"note":"Last year: Basic with ads at $2.99/mo for 12 months for sign-ups through Dec 1. Not announced for 2026 yet."}]},{"service":"paramount","plan":"Essential","standard":1.99,"status":"as-needed","discounts":[{"id":"paramount-1795615365023","label":"Promo","price":1.99,"kind":"until","months":2,"startsOn":"2026-10-25","signUpBy":"2026-10-26","endsOn":"2026-12-26","enabled":true,"confirmed":true,"note":""}]},{"service":"peacock","plan":"Premium","standard":10.99,"status":"as-needed","discounts":[{"id":"peacock-bf","label":"Holiday deal (past terms)","price":1.99,"kind":"intro","months":6,"startsOn":"2026-11-20","signUpBy":"2026-12-01","endsOn":"","enabled":false,"confirmed":false,"note":"A past holiday deal: $1.99/mo for 6 months. Not announced for 2026 yet."}]},{"service":"apple","plan":"Apple TV","standard":14.99,"status":"as-needed","discounts":[{"id":"apple-bf","label":"Black Friday (2025 terms)","price":5.99,"kind":"intro","months":6,"startsOn":"2026-11-20","signUpBy":"2026-12-01","endsOn":"","enabled":false,"confirmed":false,"note":"Last year: $5.99/mo for 6 months for sign-ups Nov 21–Dec 1. Not announced for 2026 yet."}]},{"service":"prime","plan":"Prime Video (standalone)","standard":8.99,"status":"as-needed","discounts":[]}],"bundles":[{"id":"disney-hulu-hbomax","label":"Disney+, Hulu & HBO Max bundle","services":["disney","hulu","hbomax"],"price":21.99,"status":"keeping","note":"Your current standard-rate bundle. You plan to keep it, so these three services are always on."}]}
+</script>
+
     <script src="sketch.js"></script>
   </body>
 </html>

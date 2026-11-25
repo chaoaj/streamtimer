@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "type": "stream-timer-tracklist",
+  "name": "My tracklist",
+  "savedOn": "2026-11-25",
+  "tracked": [
+    { "id": "yellowjackets-4", "title": "Yellowjackets (Season 4, final)", "service": "paramount", "status": "watching", "notes": "", "addedOn": "2026-11-25" },
+    { "id": "marshals-2", "title": "Marshals (Season 2)", "service": "paramount", "status": "watching", "notes": "", "addedOn": "2026-11-25" },
+    { "id": "rings-of-power-3", "title": "The Rings of Power (Season 3)", "service": "prime", "status": "plan", "notes": "", "addedOn": "2026-11-25" }
+  ],
+  "customShows": []
+}

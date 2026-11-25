@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "type": "stream-timer-rates",
+  "checkedOn": "2026-11-25",
+  "currency": "USD",
+  "notes": "standard = normal monthly price. discounts: kind 'intro' = promo price for the first N monthly charges if you subscribe between startsOn and signUpBy; kind 'until' = promo price on every charge dated up to endsOn, then standard. Only discounts with enabled:true change the plan. bundles: a bundle with status 'keeping' is always on: its services get no subscribe/cancel dates and its price is charged every month. status on a service: 'keeping' = you already pay for it and keep it (always on); 'as-needed' = subscribe and cancel around your shows.",
+  "rates": [
+    {
+      "service": "netflix",
+      "plan": "Standard with ads",
+      "standard": 8.99,
+      "status": "keeping",
+      "discounts": []
+    },
+    {
+      "service": "hulu",
+      "plan": "Hulu (with ads)",
+      "standard": 11.99,
+      "status": "as-needed",
+      "discounts": []
+    },
+    {
+      "service": "disney",
+      "plan": "Disney+ (with ads)",
+      "standard": 11.99,
+      "status": "as-needed",
+      "discounts": [
+        {
+          "id": "disney-bf",
+          "label": "Black Friday Disney+ & Hulu bundle (2025 terms)",
+          "price": 4.99,
+          "kind": "intro",
+          "months": 12,
+          "startsOn": "2026-11-20",
+          "signUpBy": "2026-12-01",
+          "endsOn": "",
+          "enabled": false,
+          "confirmed": false,
+          "note": "Last year: Disney+ and Hulu (with ads) bundle at $4.99/mo for 12 months. It covers Hulu too, so set Hulu's standard to 0 while using it. Not announced for 2026 yet."
+        }
+      ]
+    },
+    {
+      "service": "hbomax",
+      "plan": "Basic with ads",
+      "standard": 10.99,
+      "status": "as-needed",
+      "discounts": [
+        {
+          "id": "hbomax-bf",
+          "label": "Black Friday (2025 terms)",
+          "price": 2.99,
+          "kind": "intro",
+          "months": 12,
+          "startsOn": "2026-11-20",
+          "signUpBy": "2026-12-01",
+          "endsOn": "",
+          "enabled": false,
+          "confirmed": false,
+          "note": "Last year: Basic with ads at $2.99/mo for 12 months for sign-ups through Dec 1. Not announced for 2026 yet."
+        }
+      ]
+    },
+    {
+      "service": "paramount",
+      "plan": "Essential",
+      "standard": 1.99,
+      "status": "as-needed",
+      "discounts": [
+        {
+          "id": "paramount-1795615365023",
+          "label": "Promo",
+          "price": 1.99,
+          "kind": "until",
+          "months": 2,
+          "startsOn": "2026-10-25",
+          "signUpBy": "2026-10-26",
+          "endsOn": "2026-12-26",
+          "enabled": true,
+          "confirmed": true,
+          "note": ""
+        }
+      ]
+    },
+    {
+      "service": "peacock",
+      "plan": "Premium",
+      "standard": 10.99,
+      "status": "as-needed",
+      "discounts": [
+        {
+          "id": "peacock-bf",
+          "label": "Holiday deal (past terms)",
+          "price": 1.99,
+          "kind": "intro",
+          "months": 6,
+          "startsOn": "2026-11-20",
+          "signUpBy": "2026-12-01",
+          "endsOn": "",
+          "enabled": false,
+          "confirmed": false,
+          "note": "A past holiday deal: $1.99/mo for 6 months. Not announced for 2026 yet."
+        }
+      ]
+    },
+    {
+      "service": "apple",
+      "plan": "Apple TV",
+      "standard": 14.99,
+      "status": "as-needed",
+      "discounts": [
+        {
+          "id": "apple-bf",
+          "label": "Black Friday (2025 terms)",
+          "price": 5.99,
+          "kind": "intro",
+          "months": 6,
+          "startsOn": "2026-11-20",
+          "signUpBy": "2026-12-01",
+          "endsOn": "",
+          "enabled": false,
+          "confirmed": false,
+          "note": "Last year: $5.99/mo for 6 months for sign-ups Nov 21\u2013Dec 1. Not announced for 2026 yet."
+        }
+      ]
+    },
+    {
+      "service": "prime",
+      "plan": "Prime Video (standalone)",
+      "standard": 8.99,
+      "status": "as-needed",
+      "discounts": []
+    }
+  ],
+  "bundles": [
+    {
+      "id": "disney-hulu-hbomax",
+      "label": "Disney+, Hulu & HBO Max bundle",
+      "services": [
+        "disney",
+        "hulu",
+        "hbomax"
+      ],
+      "price": 21.99,
+      "status": "keeping",
+      "note": "Your current standard-rate bundle. You plan to keep it, so these three services are always on."
+    }
+  ]
+}

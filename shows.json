@@ -1,0 +1,792 @@
+{
+  "schemaVersion": 1,
+  "dataCheckedOn": "2026-11-25",
+  "region": "US",
+  "notes": "Edit this file to update Stream Timer, or run tools/update_data.py. type: series | movie (a movie has one entry in episodes: its streaming date). confidence: confirmed | estimated. Dates are YYYY-MM-DD. Prices are USD per month.",
+  "services": [
+    {
+      "id": "netflix",
+      "name": "Netflix",
+      "bg": "#B20710",
+      "fg": "#FFFFFF",
+      "price": 8.99,
+      "pattern": "diag"
+    },
+    {
+      "id": "hulu",
+      "name": "Hulu",
+      "bg": "#1CE783",
+      "fg": "#0B0B0B",
+      "price": 11.99,
+      "pattern": "dots"
+    },
+    {
+      "id": "disney",
+      "name": "Disney+",
+      "bg": "#113CCF",
+      "fg": "#FFFFFF",
+      "price": 11.99,
+      "pattern": "horiz"
+    },
+    {
+      "id": "hbomax",
+      "name": "HBO Max",
+      "bg": "#5B2EE0",
+      "fg": "#FFFFFF",
+      "price": 10.99,
+      "pattern": "cross"
+    },
+    {
+      "id": "paramount",
+      "name": "Paramount+",
+      "bg": "#0064FF",
+      "fg": "#FFFFFF",
+      "price": 8.99,
+      "pattern": "vert"
+    },
+    {
+      "id": "peacock",
+      "name": "Peacock",
+      "bg": "#FCCC12",
+      "fg": "#0B0B0B",
+      "price": 10.99,
+      "pattern": "diagR"
+    },
+    {
+      "id": "apple",
+      "name": "Apple TV",
+      "bg": "#000000",
+      "fg": "#FFFFFF",
+      "price": 14.99,
+      "pattern": "grid"
+    },
+    {
+      "id": "prime",
+      "name": "Prime Video",
+      "bg": "#00A8E1",
+      "fg": "#0B0B0B",
+      "price": 8.99,
+      "pattern": "zig"
+    }
+  ],
+  "shows": [
+    {
+      "id": "bad-monkey-2",
+      "title": "Bad Monkey (Season 2)",
+      "service": "apple",
+      "confidence": "confirmed",
+      "note": "10 episodes, weekly on Wednesdays, Dec 2 through the Feb 3 finale.",
+      "episodes": [
+        {
+          "n": 1,
+          "date": "2026-12-02"
+        },
+        {
+          "n": 2,
+          "date": "2026-12-09"
+        },
+        {
+          "n": 3,
+          "date": "2026-12-16"
+        },
+        {
+          "n": 4,
+          "date": "2026-12-23"
+        },
+        {
+          "n": 5,
+          "date": "2026-12-30"
+        },
+        {
+          "n": 6,
+          "date": "2027-01-06"
+        },
+        {
+          "n": 7,
+          "date": "2027-01-13"
+        },
+        {
+          "n": 8,
+          "date": "2027-01-20"
+        },
+        {
+          "n": 9,
+          "date": "2027-01-27"
+        },
+        {
+          "n": 10,
+          "date": "2027-02-03"
+        }
+      ],
+      "type": "series"
+    },
+    {
+      "id": "maxton-hall-3",
+      "title": "Maxton Hall (Season 3, final)",
+      "service": "prime",
+      "confidence": "confirmed",
+      "note": "6 episodes: 2 a week starting Dec 9, finale Dec 23.",
+      "episodes": [
+        {
+          "n": 1,
+          "date": "2026-12-09"
+        },
+        {
+          "n": 2,
+          "date": "2026-12-09"
+        },
+        {
+          "n": 3,
+          "date": "2026-12-16"
+        },
+        {
+          "n": 4,
+          "date": "2026-12-16"
+        },
+        {
+          "n": 5,
+          "date": "2026-12-23"
+        },
+        {
+          "n": 6,
+          "date": "2026-12-23"
+        }
+      ],
+      "type": "series"
+    },
+    {
+      "id": "ted-animated",
+      "title": "TED: The Animated Series",
+      "service": "peacock",
+      "confidence": "confirmed",
+      "note": "All 8 episodes Dec 17. Peacock says more episodes are coming in 2027.",
+      "episodes": [
+        {
+          "n": 1,
+          "date": "2026-12-17"
+        },
+        {
+          "n": 2,
+          "date": "2026-12-17"
+        },
+        {
+          "n": 3,
+          "date": "2026-12-17"
+        },
+        {
+          "n": 4,
+          "date": "2026-12-17"
+        },
+        {
+          "n": 5,
+          "date": "2026-12-17"
+        },
+        {
+          "n": 6,
+          "date": "2026-12-17"
+        },
+        {
+          "n": 7,
+          "date": "2026-12-17"
+        },
+        {
+          "n": 8,
+          "date": "2026-12-17"
+        }
+      ],
+      "type": "series"
+    },
+    {
+      "id": "frisco-king",
+      "title": "Frisco King (Season 1)",
+      "service": "paramount",
+      "confidence": "confirmed",
+      "note": "2-episode premiere Dec 18, then weekly on Fridays. 8 episodes, finale Jan 29.",
+      "episodes": [
+        {
+          "n": 1,
+          "date": "2026-12-18"
+        },
+        {
+          "n": 2,
+          "date": "2026-12-18"
+        },
+        {
+          "n": 3,
+          "date": "2026-12-25"
+        },
+        {
+          "n": 4,
+          "date": "2027-01-01"
+        },
+        {
+          "n": 5,
+          "date": "2027-01-08"
+        },
+        {
+          "n": 6,
+          "date": "2027-01-15"
+        },
+        {
+          "n": 7,
+          "date": "2027-01-22"
+        },
+        {
+          "n": 8,
+          "date": "2027-01-29"
+        }
+      ],
+      "type": "series"
+    },
+    {
+      "id": "emily-paris-6",
+      "title": "Emily in Paris (Season 6, final)",
+      "service": "netflix",
+      "confidence": "estimated",
+      "note": "Premieres Dec 24. Episode guides list 10 episodes, all on that day, but Netflix hasn\u2019t confirmed the count.",
+      "episodes": [
+        {
+          "n": 1,
+          "date": "2026-12-24"
+        },
+        {
+          "n": 2,
+          "date": "2026-12-24"
+        },
+        {
+          "n": 3,
+          "date": "2026-12-24"
+        },
+        {
+          "n": 4,
+          "date": "2026-12-24"
+        },
+        {
+          "n": 5,
+          "date": "2026-12-24"
+        },
+        {
+          "n": 6,
+          "date": "2026-12-24"
+        },
+        {
+          "n": 7,
+          "date": "2026-12-24"
+        },
+        {
+          "n": 8,
+          "date": "2026-12-24"
+        },
+        {
+          "n": 9,
+          "date": "2026-12-24"
+        },
+        {
+          "n": 10,
+          "date": "2026-12-24"
+        }
+      ],
+      "type": "series"
+    },
+    {
+      "id": "harry-potter-1",
+      "title": "Harry Potter (Season 1)",
+      "service": "hbomax",
+      "confidence": "estimated",
+      "note": "HBO confirmed the Dec 25 premiere and 8 episodes. The weekly Sunday schedule through a Feb 14 finale is reported, not official.",
+      "episodes": [
+        {
+          "n": 1,
+          "date": "2026-12-25"
+        },
+        {
+          "n": 2,
+          "date": "2027-01-03"
+        },
+        {
+          "n": 3,
+          "date": "2027-01-10"
+        },
+        {
+          "n": 4,
+          "date": "2027-01-17"
+        },
+        {
+          "n": 5,
+          "date": "2027-01-24"
+        },
+        {
+          "n": 6,
+          "date": "2027-01-31"
+        },
+        {
+          "n": 7,
+          "date": "2027-02-07"
+        },
+        {
+          "n": 8,
+          "date": "2027-02-14"
+        }
+      ],
+      "type": "series"
+    },
+    {
+      "id": "the-pitt-3",
+      "title": "The Pitt (Season 3)",
+      "service": "hbomax",
+      "confidence": "estimated",
+      "note": "15 episodes, coming January 2027. The Jan 7 date assumes the same week as past premieres. Not official yet.",
+      "episodes": [
+        {
+          "n": 1,
+          "date": "2027-01-07"
+        },
+        {
+          "n": 2,
+          "date": "2027-01-14"
+        },
+        {
+          "n": 3,
+          "date": "2027-01-21"
+        },
+        {
+          "n": 4,
+          "date": "2027-01-28"
+        },
+        {
+          "n": 5,
+          "date": "2027-02-04"
+        },
+        {
+          "n": 6,
+          "date": "2027-02-11"
+        },
+        {
+          "n": 7,
+          "date": "2027-02-18"
+        },
+        {
+          "n": 8,
+          "date": "2027-02-25"
+        },
+        {
+          "n": 9,
+          "date": "2027-03-04"
+        },
+        {
+          "n": 10,
+          "date": "2027-03-11"
+        },
+        {
+          "n": 11,
+          "date": "2027-03-18"
+        },
+        {
+          "n": 12,
+          "date": "2027-03-25"
+        },
+        {
+          "n": 13,
+          "date": "2027-04-01"
+        },
+        {
+          "n": 14,
+          "date": "2027-04-08"
+        },
+        {
+          "n": 15,
+          "date": "2027-04-15"
+        }
+      ],
+      "type": "series"
+    },
+    {
+      "id": "ahsoka-2",
+      "title": "Ahsoka (Season 2)",
+      "service": "disney",
+      "confidence": "estimated",
+      "note": "Premieres Jan 20. 8 episodes. Weekly release is an estimate: Disney hasn\u2019t announced the schedule.",
+      "episodes": [
+        {
+          "n": 1,
+          "date": "2027-01-20"
+        },
+        {
+          "n": 2,
+          "date": "2027-01-27"
+        },
+        {
+          "n": 3,
+          "date": "2027-02-03"
+        },
+        {
+          "n": 4,
+          "date": "2027-02-10"
+        },
+        {
+          "n": 5,
+          "date": "2027-02-17"
+        },
+        {
+          "n": 6,
+          "date": "2027-02-24"
+        },
+        {
+          "n": 7,
+          "date": "2027-03-03"
+        },
+        {
+          "n": 8,
+          "date": "2027-03-10"
+        }
+      ],
+      "type": "series"
+    },
+    {
+      "id": "the-one-piece",
+      "title": "THE ONE PIECE (anime)",
+      "service": "netflix",
+      "confidence": "estimated",
+      "note": "All 7 episodes at once, in February 2027. The exact day isn\u2019t set yet, so it\u2019s shown on Feb 1.",
+      "episodes": [
+        {
+          "n": 1,
+          "date": "2027-02-01"
+        },
+        {
+          "n": 2,
+          "date": "2027-02-01"
+        },
+        {
+          "n": 3,
+          "date": "2027-02-01"
+        },
+        {
+          "n": 4,
+          "date": "2027-02-01"
+        },
+        {
+          "n": 5,
+          "date": "2027-02-01"
+        },
+        {
+          "n": 6,
+          "date": "2027-02-01"
+        },
+        {
+          "n": 7,
+          "date": "2027-02-01"
+        }
+      ],
+      "type": "series"
+    },
+    {
+      "id": "the-land",
+      "title": "The Land (Season 1)",
+      "service": "hulu",
+      "confidence": "estimated",
+      "note": "2-episode premiere Feb 15, then weekly on Mondays. The 10-episode total comes from episode guides, not Hulu.",
+      "episodes": [
+        {
+          "n": 1,
+          "date": "2027-02-15"
+        },
+        {
+          "n": 2,
+          "date": "2027-02-15"
+        },
+        {
+          "n": 3,
+          "date": "2027-02-22"
+        },
+        {
+          "n": 4,
+          "date": "2027-03-01"
+        },
+        {
+          "n": 5,
+          "date": "2027-03-08"
+        },
+        {
+          "n": 6,
+          "date": "2027-03-15"
+        },
+        {
+          "n": 7,
+          "date": "2027-03-22"
+        },
+        {
+          "n": 8,
+          "date": "2027-03-29"
+        },
+        {
+          "n": 9,
+          "date": "2027-04-05"
+        },
+        {
+          "n": 10,
+          "date": "2027-04-12"
+        }
+      ],
+      "type": "series"
+    },
+    {
+      "id": "presumed-innocent-2",
+      "title": "Presumed Innocent (Season 2)",
+      "service": "apple",
+      "confidence": "estimated",
+      "note": "2-episode premiere Feb 19, then weekly. The 8-episode total is an estimate based on Season 1.",
+      "episodes": [
+        {
+          "n": 1,
+          "date": "2027-02-19"
+        },
+        {
+          "n": 2,
+          "date": "2027-02-19"
+        },
+        {
+          "n": 3,
+          "date": "2027-02-26"
+        },
+        {
+          "n": 4,
+          "date": "2027-03-05"
+        },
+        {
+          "n": 5,
+          "date": "2027-03-12"
+        },
+        {
+          "n": 6,
+          "date": "2027-03-19"
+        },
+        {
+          "n": 7,
+          "date": "2027-03-26"
+        },
+        {
+          "n": 8,
+          "date": "2027-04-02"
+        }
+      ],
+      "type": "series"
+    },
+    {
+      "id": "rings-of-power-3",
+      "title": "The Rings of Power (Season 3)",
+      "service": "prime",
+      "confidence": "confirmed",
+      "note": "Running now. Episodes 1\u20134 came out Nov 11, 5\u20136 on Nov 18, and the last two moved up to the evening of Nov 24. All 8 are out, so you can binge now.",
+      "episodes": [
+        {
+          "n": 1,
+          "date": "2026-11-11"
+        },
+        {
+          "n": 2,
+          "date": "2026-11-11"
+        },
+        {
+          "n": 3,
+          "date": "2026-11-11"
+        },
+        {
+          "n": 4,
+          "date": "2026-11-11"
+        },
+        {
+          "n": 5,
+          "date": "2026-11-18"
+        },
+        {
+          "n": 6,
+          "date": "2026-11-18"
+        },
+        {
+          "n": 7,
+          "date": "2026-11-24"
+        },
+        {
+          "n": 8,
+          "date": "2026-11-24"
+        }
+      ],
+      "type": "series"
+    },
+    {
+      "id": "yellowjackets-4",
+      "title": "Yellowjackets (Season 4, final)",
+      "service": "paramount",
+      "confidence": "confirmed",
+      "note": "Running now. 10 episodes, weekly on Fridays, Nov 20 through the Jan 22 series finale. Needs the Paramount+ Premium plan (with Showtime), so raise the Paramount+ price if you're on Essential.",
+      "episodes": [
+        {
+          "n": 1,
+          "date": "2026-11-20"
+        },
+        {
+          "n": 2,
+          "date": "2026-11-27"
+        },
+        {
+          "n": 3,
+          "date": "2026-12-04"
+        },
+        {
+          "n": 4,
+          "date": "2026-12-11"
+        },
+        {
+          "n": 5,
+          "date": "2026-12-18"
+        },
+        {
+          "n": 6,
+          "date": "2026-12-25"
+        },
+        {
+          "n": 7,
+          "date": "2027-01-01"
+        },
+        {
+          "n": 8,
+          "date": "2027-01-08"
+        },
+        {
+          "n": 9,
+          "date": "2027-01-15"
+        },
+        {
+          "n": 10,
+          "date": "2027-01-22"
+        }
+      ],
+      "type": "series"
+    },
+    {
+      "id": "marshals-2",
+      "title": "Marshals (Season 2)",
+      "service": "paramount",
+      "confidence": "estimated",
+      "note": "Running now. Airs Sundays on CBS and streams on Paramount+ the next day (dates shown are the Paramount+ days). Episodes 1\u20138 ran Oct 5\u2013Nov 23. Episodes 9\u201318 are announced only for 2027: the Jan 11 restart and the 18-episode total are estimates.",
+      "episodes": [
+        {
+          "n": 1,
+          "date": "2026-10-05"
+        },
+        {
+          "n": 2,
+          "date": "2026-10-12"
+        },
+        {
+          "n": 3,
+          "date": "2026-10-19"
+        },
+        {
+          "n": 4,
+          "date": "2026-10-26"
+        },
+        {
+          "n": 5,
+          "date": "2026-11-02"
+        },
+        {
+          "n": 6,
+          "date": "2026-11-09"
+        },
+        {
+          "n": 7,
+          "date": "2026-11-16"
+        },
+        {
+          "n": 8,
+          "date": "2026-11-23"
+        },
+        {
+          "n": 9,
+          "date": "2027-01-11"
+        },
+        {
+          "n": 10,
+          "date": "2027-01-18"
+        },
+        {
+          "n": 11,
+          "date": "2027-01-25"
+        },
+        {
+          "n": 12,
+          "date": "2027-02-01"
+        },
+        {
+          "n": 13,
+          "date": "2027-02-08"
+        },
+        {
+          "n": 14,
+          "date": "2027-02-15"
+        },
+        {
+          "n": 15,
+          "date": "2027-02-22"
+        },
+        {
+          "n": 16,
+          "date": "2027-03-01"
+        },
+        {
+          "n": 17,
+          "date": "2027-03-08"
+        },
+        {
+          "n": 18,
+          "date": "2027-03-15"
+        }
+      ],
+      "type": "series"
+    },
+    {
+      "id": "the-man-with-the-bag-movie",
+      "title": "The Man With the Bag",
+      "service": "prime",
+      "type": "movie",
+      "confidence": "confirmed",
+      "note": "Holiday comedy with Arnold Schwarzenegger. Streaming Dec 2 on Prime Video.",
+      "episodes": [
+        {
+          "n": 1,
+          "date": "2026-12-02"
+        }
+      ]
+    },
+    {
+      "id": "in-waves-movie",
+      "title": "In Waves",
+      "service": "netflix",
+      "type": "movie",
+      "confidence": "confirmed",
+      "note": "Animated feature. Streaming Dec 11 on Netflix.",
+      "episodes": [
+        {
+          "n": 1,
+          "date": "2026-12-11"
+        }
+      ]
+    },
+    {
+      "id": "ray-gunn-movie",
+      "title": "Ray Gunn",
+      "service": "netflix",
+      "type": "movie",
+      "confidence": "confirmed",
+      "note": "Animated feature from Brad Bird. Streaming Dec 18 on Netflix.",
+      "episodes": [
+        {
+          "n": 1,
+          "date": "2026-12-18"
+        }
+      ]
+    }
+  ]
+}

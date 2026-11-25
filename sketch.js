@@ -700,12 +700,32 @@ function updateShows(silent) {
   });
 }
 
+// Downloads: inside claude.ai the page asks the platform (claude.use('downloads'));
+// on a normal website (GitHub Pages, a local server) it saves files with a Blob link.
+const browserDownloads = {
+  save({ filename, data }) {
+    const type = filename.endsWith('.json') ? 'application/json'
+      : filename.endsWith('.ics') ? 'text/calendar' : 'text/plain';
+    const url = URL.createObjectURL(new Blob([data], { type: type + ';charset=utf-8' }));
+    const a = document.createElement('a');
+    a.href = url; a.download = filename; a.style.display = 'none';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    return Promise.resolve({ status: 'saved' });
+  }
+};
+let canSaveIcs = false;   // claude.ai refuses .ics files; a normal website can save them
+
 async function initDownloads() {
-  try { downloads = window.claude ? await window.claude.use('downloads') : null; } catch (e) { downloads = null; }
+  const inClaude = !!(window.claude && window.claude.use);
+  try { downloads = inClaude ? await window.claude.use('downloads') : browserDownloads; } catch (e) { downloads = null; }
+  if (!downloads && !inClaude) downloads = browserDownloads;
+  canSaveIcs = downloads === browserDownloads;
   $('copyPlan').textContent = downloads ? 'Download plan (.txt)' : 'Copy plan as text';
   $('exportJson').textContent = downloads ? 'Export JSON' : 'Copy JSON';
   $('saveTrack').textContent = downloads ? 'Save tracklist.json' : 'Copy tracklist JSON';
   $('saveRates').textContent = downloads ? 'Save rates.json' : 'Copy rates JSON';
+  $('copyIcs').textContent = canSaveIcs ? 'Download calendar reminders (.ics)' : 'Copy calendar reminders (.ics)';
 }
 
 async function saveOrCopy(filename, text, label, msgEl) {
@@ -1620,7 +1640,9 @@ function wireControls() {
   $('exportJson').addEventListener('click', () => saveOrCopy('shows.json', JSON.stringify(toJSON(true), null, 2), 'Show data', $('updateMsg')));
   $('importBtn').addEventListener('click', () => $('importFile').click());
   $('importFile').addEventListener('change', e => { if (e.target.files[0]) importJSONFile(e.target.files[0]); });
-  $('copyIcs').addEventListener('click', () => copyOut(icsText(), 'Calendar file text'));
+  $('copyIcs').addEventListener('click', () => canSaveIcs
+    ? saveOrCopy('stream-timer-reminders.ics', icsText(), 'Calendar reminders')
+    : copyOut(icsText(), 'Calendar file text'));
   $('planTracked').addEventListener('click', planTracked);
   $('cards').addEventListener('click', planAction);
   $('removedBox').addEventListener('click', planAction);

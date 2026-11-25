@@ -64,7 +64,7 @@
     {
       "service": "paramount",
       "plan": "Essential",
-      "standard": 1.99,
+      "standard": 8.99,
       "status": "as-needed",
       "discounts": [
         {
@@ -120,15 +120,15 @@
           "endsOn": "",
           "enabled": false,
           "confirmed": false,
-          "note": "Last year: $5.99/mo for 6 months for sign-ups Nov 21\u2013Dec 1. Not announced for 2026 yet."
+          "note": "Last year: $5.99/mo for 6 months for sign-ups Nov 21–Dec 1. Not announced for 2026 yet."
         }
       ]
     },
     {
       "service": "prime",
       "plan": "Prime Video (standalone)",
-      "standard": 8.99,
-      "status": "as-needed",
+      "standard": 0,
+      "status": "keeping",
       "discounts": []
     }
   ],
